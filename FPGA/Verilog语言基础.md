@@ -63,7 +63,7 @@ ODDR2作用：xilinx FPGA中PLL产生的时钟不能直接输出到板卡的通�
 ```
 PIN "OUT20_40M/clkout2_buf.O" CLOCK_DEDICATED_ROUTE = FALSE; 
 ```
-编译器会忽略时序要求，直接与普通IO相连，当时钟输出的时延和抖动变差。
+编译器会忽略时序要求，直接与普通IO相连，相应地，时钟输出的时延和抖动会变差。
 ```
 ODDR2 #(
     .DDR_ALIGNMENT("NONE"), //set output alignment to "NONE","C0" or "C1"
@@ -83,6 +83,63 @@ ODDR2 #(
     );
     
 ```
+
+## 7. 捕获时钟沿
+上升沿：
+
+```
+always @(posedge clk)
+begin
+    //上升沿变成高电平
+    wrsigbuf <= wrsig;
+    wrsigrise <= (~wrsigbuf) & wrsig;
+end
+```
+下降沿：
+
+```
+always @(posedge clk)  
+begin
+    //下面两句将rx的下降沿变成rxfall的高电平
+    rxbuf <= rx;
+    rxfall <= rxbuf & (~rx);
+end 
+```
+## 8. wire与reg
+assign是针对wire型变量的一种赋值语句，wire变量的值是会随着驱动源的变化而变化，称之为“连续”赋值语句。
+
+在Verilog中，任何过程赋值的左侧变量必须声明为reg。
+
+模块输入信号默认为wire型
+
+## 9. always
+
+```
+always @(*) 
+//组合逻辑电路描述方式，敏感表*表示全部敏感变量
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
